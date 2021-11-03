@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import GlobalStyles from '../styles/GlobalStyles'
 import styled from 'styled-components'
+import 'normalize.css'
+
+const Container = styled.div`
+  border: 1px solid red;
+  width: 100%;
+  margin: 0;
+`
 
 const SearchLabel = styled.label`
   font-size: 2rem;
@@ -30,11 +37,11 @@ function App() {
   }, [])
 
   return (
-    <div>
+    <Container>
       <GlobalStyles />
       <SearchLabel htmlFor="searchGithub">Search Github</SearchLabel>
       <SearchInput id="searchGithub" placeholder="search github" type="text" />
-    </div>
+    </Container>
   )
 }
 
