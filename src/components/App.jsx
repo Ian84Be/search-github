@@ -5,35 +5,65 @@ import Results from './results'
 import Details from './results/Details'
 import { useNavigate, Routes, Route } from 'react-router-dom'
 import GithubLogo from './GithubLogo'
+import { breakpoints } from '../styles/_breakpoints'
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
 `
-const Header = styled.header`
+const HeaderContainer = styled.header`
   background: var(--header-bg);
   display: flex;
-  flex-direction: column;
-  padding: 20px;
+  align-items: center;
+  justify-content: center;
 `
-const Body = styled.main`
-  /* border: 1px solid red; */
+const HeaderContent = styled.header`
+  background: var(--header-bg);
   display: flex;
-  flex-direction: column;
   padding: 20px;
+  max-width: var(--content-max);
+  width: 100%;
+  @media (max-width: ${breakpoints.medium}) {
+    flex-direction: column;
+    align-items: center;
+    font-size: 18px;
+    padding: 0;
+  }
+`
+const HeaderLogo = styled.div`
+  margin-right: 20px;
+  @media (max-width: ${breakpoints.medium}) {
+    margin: 20px;
+    font-size: 18px;
+  }
 `
 const Form = styled.form`
   align-items: center;
   display: flex;
+  width: 50%;
+  @media (max-width: ${breakpoints.medium}) {
+    background: var(--bg);
+    width: 100%;
+    font-size: 18px;
+  }
 `
 const SearchInput = styled.input`
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
-  margin-left: 20px;
   padding: 5px 12px;
-  width: 50%;
+  width: 100%;
+  @media (max-width: ${breakpoints.medium}) {
+    margin: 20px;
+    font-size: 18px;
+  }
+`
+const Body = styled.main`
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  /* border: 1px solid red; */
 `
 
 function App() {
@@ -51,20 +81,24 @@ function App() {
 
   return (
     <Container>
-      <Header>
-        <GlobalStyles />
-        <Form onSubmit={submitForm}>
-          <GithubLogo />
-          <SearchInput
-            id="search"
-            name="search"
-            placeholder="search"
-            type="text"
-            value={searchInput}
-            onChange={handleChange}
-          />
-        </Form>
-      </Header>
+      <GlobalStyles />
+      <HeaderContainer>
+        <HeaderContent>
+          <HeaderLogo>
+            <GithubLogo />
+          </HeaderLogo>
+          <Form onSubmit={submitForm}>
+            <SearchInput
+              id="search"
+              name="search"
+              placeholder="search"
+              type="text"
+              value={searchInput}
+              onChange={handleChange}
+            />
+          </Form>
+        </HeaderContent>
+      </HeaderContainer>
 
       <Body>
         <Routes>

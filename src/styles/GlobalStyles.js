@@ -10,6 +10,8 @@ const GlobalStyles = createGlobalStyle`
 		--border: #30363d;
 		--border-muted: #21262d;
 		--white: #f0f6fc;
+
+		--content-max: 1012px;
 	}
 
 	body {

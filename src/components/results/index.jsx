@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import LanguageRow from './LanguageRow'
+import { breakpoints } from '../../styles/_breakpoints'
 
 const Container = styled.div`
   /* border: 1px solid red; */
@@ -21,13 +22,21 @@ const Body = styled.main`
   /* border: 1px solid white; */
   display: flex;
   flex-direction: row;
-  max-width: 1012px;
+  max-width: var(--content-max);
   width: 100%;
+  @media (max-width: ${breakpoints.small}) {
+    flex-direction: column;
+    align-items: center;
+  }
 `
 const LanguagePanel = styled.section`
   display: flex;
   flex-direction: column;
   width: 25%;
+  @media (max-width: ${breakpoints.small}) {
+    width: 100%;
+    font-size: 18px;
+  }
 `
 const LanguageBody = styled.div`
   border: 1px solid var(--border);
@@ -46,6 +55,9 @@ const ResultsPanel = styled.section`
   flex-direction: column;
   padding-left: 20px;
   width: 75%;
+  @media (max-width: ${breakpoints.small}) {
+    width: 100%;
+  }
 `
 const ResultRow = styled.div`
   border-bottom: 1px solid var(--border-muted);

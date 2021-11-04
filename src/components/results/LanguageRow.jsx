@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSearchParams } from 'react-router-dom'
+import { breakpoints } from '../../styles/_breakpoints'
 
 const Row = styled.div`
   border-radius: 6px;
