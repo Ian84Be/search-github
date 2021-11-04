@@ -6,7 +6,6 @@ const Details = () => {
   const [searchResults, setSearchResults] = useState(null)
   useEffect(() => {
     const queryGithub = async () => {
-      console.log('queryGithub query', searchParams.toString())
       const full_name = searchParams.get('full_name')
       const baseUrl = 'https://api.github.com/repos/'
       const response = await fetch(baseUrl + full_name)

@@ -9,11 +9,13 @@ const GlobalStyles = createGlobalStyle`
 		--link: #58a6ff;
 		--border: #30363d;
 		--border-muted: #21262d;
+		--white: #f0f6fc;
 	}
 
 	body {
 		background: var(--bg);
 		color: var(--text);
+		font-family: sans-serif;
 		a {
 			color: var(--link);
 		}

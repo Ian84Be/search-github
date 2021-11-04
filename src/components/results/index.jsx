@@ -4,39 +4,71 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import LanguageRow from './LanguageRow'
 
 const Container = styled.div`
+  /* border: 1px solid red; */
+  align-items: center;
   display: flex;
   flex-direction: column;
 `
 const Header = styled.header`
-  /* border: 1px solid red; */
-  background: var(--header-bg);
+  border-bottom: 1px solid var(--border-muted);
   display: flex;
-  flex-direction: column;
+  font-size: 20px;
+  font-weight: bold;
+  justify-content: space-between;
   padding: 20px;
 `
 const Body = styled.main`
-  /* border: 1px solid red; */
+  /* border: 1px solid white; */
   display: flex;
   flex-direction: row;
-  padding: 20px;
+  max-width: 1012px;
+  width: 100%;
 `
 const LanguagePanel = styled.section`
-  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+`
+const LanguageBody = styled.div`
+  border: 1px solid var(--border);
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   padding: 20px;
+`
+const LanguageHeader = styled.header`
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
 `
 const ResultsPanel = styled.section`
-  border: 1px solid green;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding-left: 20px;
+  width: 75%;
 `
 const ResultRow = styled.div`
-  border: 1px solid var(--border-muted);
+  border-bottom: 1px solid var(--border-muted);
   display: flex;
   flex-direction: row;
   padding: 20px;
+  &:hover {
+    cursor: pointer;
+  }
+`
+const SortButton = styled.button`
+  background: var(--border-muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 20px;
+  padding: 3px 12px;
+  &:hover {
+    background: var(--border);
+    border-color: var(--text-muted);
+    cursor: pointer;
+  }
 `
 
 function Results() {
@@ -55,7 +87,6 @@ function Results() {
     }
 
     const queryGithub = async () => {
-      console.log('queryGithub query', searchParams.toString())
       const baseUrl = 'https://api.github.com/search/repositories?'
       const response = await fetch(baseUrl + searchParams.toString())
         .then((res) => res.json())
@@ -72,7 +103,8 @@ function Results() {
     for (let [key, value] of searchParams.entries()) {
       newQuery[key] = value
     }
-    newQuery.sort = e.target.value
+    if (newQuery.sort !== '') newQuery.sort = ''
+    else newQuery.sort = 'stars'
 
     console.log(newQuery)
     setSearchParams(newQuery)
@@ -86,30 +118,29 @@ function Results() {
     const languageKeys = Object.keys(languages)
     return (
       <Container>
-        <Header>
-          <div>
-            showing {searchResults.items.length} of {searchResults.total_count}{' '}
-            repository results
-          </div>
-          <div>
-            Sort:
-            <button name="sort" value={''} onClick={handleSort}>
-              Best match
-            </button>
-            <button name="sort" value={'stars'} onClick={handleSort}>
-              Stars
-            </button>
-          </div>
-        </Header>
-
         <Body>
           <LanguagePanel>
-            {languageKeys &&
-              languageKeys.map((lang) => (
-                <LanguageRow key={lang} count={languages[lang]} lang={lang} />
-              ))}
+            <LanguageBody>
+              <LanguageHeader>Languages</LanguageHeader>
+              {languageKeys &&
+                languageKeys.map((lang) => (
+                  <LanguageRow key={lang} count={languages[lang]} lang={lang} />
+                ))}
+            </LanguageBody>
           </LanguagePanel>
           <ResultsPanel>
+            <Header>
+              <div>
+                showing {searchResults.items.length} of{' '}
+                {searchResults.total_count} repository results
+              </div>
+              <SortButton onClick={handleSort}>
+                Sort:{' '}
+                {searchParams.get('sort') === 'stars'
+                  ? 'Most stars'
+                  : 'Best match'}
+              </SortButton>
+            </Header>
             {searchResults.items &&
               searchResults.items.map((item) => (
                 <ResultRow
