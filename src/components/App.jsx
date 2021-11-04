@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import GlobalStyles from '../styles/GlobalStyles'
 import styled from 'styled-components'
 import Results from './results'
+import Details from './results/Details'
 import { useNavigate, Routes, Route } from 'react-router-dom'
 
 const Container = styled.div`
@@ -65,6 +66,7 @@ function App() {
       <Body>
         <Routes>
           <Route path="/search" element={<Results />} />
+          <Route path="/details" element={<Details />} />
         </Routes>
       </Body>
     </Container>

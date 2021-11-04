@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import LanguageRow from './LanguageRow'
 
 const Container = styled.div`
   display: flex;
@@ -39,10 +40,8 @@ const ResultRow = styled.div`
 `
 
 function Results() {
-  let [searchParams, setSearchParams] = useSearchParams()
-  // const query = searchParams.get('q').split(' ')
-  // console.log({ query })
-
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [searchResults, setSearchResults] = useState(null)
   const [languages, setLanguages] = useState(null)
   useEffect(() => {
@@ -79,12 +78,19 @@ function Results() {
     setSearchParams(newQuery)
   }
 
+  const handleDetails = async (full_name) => {
+    navigate(`../details?full_name=${full_name}`, { replace: true })
+  }
+
   if (searchResults) {
     const languageKeys = Object.keys(languages)
     return (
       <Container>
         <Header>
-          <div>{searchResults.total_count} repository results</div>
+          <div>
+            showing {searchResults.items.length} of {searchResults.total_count}{' '}
+            repository results
+          </div>
           <div>
             Sort:
             <button name="sort" value={''} onClick={handleSort}>
@@ -106,36 +112,18 @@ function Results() {
           <ResultsPanel>
             {searchResults.items &&
               searchResults.items.map((item) => (
-                <ResultRow key={item.id}>{item.name}</ResultRow>
+                <ResultRow
+                  key={item.id}
+                  onClick={() => handleDetails(item.full_name)}
+                >
+                  {item.name}
+                </ResultRow>
               ))}
           </ResultsPanel>
         </Body>
       </Container>
     )
   } else return <></>
-}
-
-const LanguageRow = ({ count, lang }) => {
-  let [searchParams, setSearchParams] = useSearchParams()
-  const handleLanguageFilter = async (lang) => {
-    let newQuery = {}
-    for (let [key, value] of searchParams.entries()) {
-      newQuery[key] = value
-    }
-    console.log(newQuery)
-    let query = searchParams.get('q').split(' ')
-    console.log('searchParams query', query)
-    newQuery.q = `${query[0]} language:${lang}`
-
-    console.log(newQuery)
-    setSearchParams(newQuery)
-  }
-  return (
-    <div onClick={() => handleLanguageFilter(lang)}>
-      <div>{lang}</div>
-      <div>{count}</div>
-    </div>
-  )
 }
 
 export default Results
