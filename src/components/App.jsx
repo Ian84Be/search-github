@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import GlobalStyles from '../styles/GlobalStyles'
 import styled from 'styled-components'
-import 'normalize.css'
 import Results from './results'
+import { useNavigate, Routes, Route } from 'react-router-dom'
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
 `
-
 const Header = styled.header`
   background: var(--header-bg);
   display: flex;
@@ -21,11 +20,9 @@ const Body = styled.main`
   flex-direction: column;
   padding: 20px;
 `
-
 const SearchLabel = styled.label`
   font-size: 2rem;
 `
-
 const SearchInput = styled.input`
   border-radius: 6px;
   padding: 5px 12px;
@@ -36,45 +33,40 @@ const SearchInput = styled.input`
 `
 
 function App() {
-  const [searchResults, setSearchResults] = useState([])
-  const [formInput, setFormInput] = useState('')
-  // const [queryString, setQueryString] = useState(`https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc`)
+  const navigate = useNavigate()
+  const [searchInput, setSeachInput] = useState('')
 
-  const handleInputChange = (e) => {
-    setFormInput(e.target.value)
+  const handleChange = (event) => {
+    setSeachInput(event.target.value)
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    await githubTest()
-  }
-
-  const githubTest = async () => {
-    const testURL = `https://api.github.com/search/repositories?q=${formInput}`
-    const response = await fetch(testURL)
-      .then((res) => res.json())
-      .catch((err) => console.error(err))
-    console.log({ response })
-    setSearchResults(response)
+  const submitForm = async (event) => {
+    event.preventDefault()
+    navigate(`../search?q=${searchInput}`, { replace: true })
   }
 
   return (
     <Container>
       <Header>
         <GlobalStyles />
-        <SearchLabel htmlFor="searchGithub">Search Github</SearchLabel>
-        <form onSubmit={handleSubmit}>
+        <SearchLabel htmlFor="search">Search Github</SearchLabel>
+        <form onSubmit={submitForm}>
           <SearchInput
-            id="searchGithub"
-            placeholder="search github"
+            id="search"
+            name="search"
+            placeholder="search"
             type="text"
-            value={formInput}
-            onChange={handleInputChange}
+            value={searchInput}
+            onChange={handleChange}
           />
         </form>
       </Header>
 
-      <Body>{searchResults && <Results searchResults={searchResults} />}</Body>
+      <Body>
+        <Routes>
+          <Route path="/search" element={<Results />} />
+        </Routes>
+      </Body>
     </Container>
   )
 }
