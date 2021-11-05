@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import GlobalStyles from '../styles/GlobalStyles'
+import React, { useState } from 'react'
+import { useSearchParams, useNavigate, Routes, Route } from 'react-router-dom'
 import styled from 'styled-components'
 import Results from './results'
 import Details from './results/Details'
-import { useNavigate, Routes, Route } from 'react-router-dom'
-import GithubLogo from './GithubLogo'
+import GlobalStyles from '../styles/GlobalStyles'
 import { breakpoints } from '../styles/_breakpoints'
+import GithubLogo from './GithubLogo'
 
 const Container = styled.div`
   display: flex;
@@ -56,19 +56,22 @@ const SearchInput = styled.input`
   width: 100%;
   @media (max-width: ${breakpoints.medium}) {
     margin: 20px;
+    margin-bottom: 10px;
     font-size: 18px;
   }
 `
 const Body = styled.main`
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  /* border: 1px solid red; */
 `
 
 function App() {
   const navigate = useNavigate()
-  const [searchInput, setSeachInput] = useState('')
+  const [searchParams] = useSearchParams()
+  const qValue = searchParams.get('q')
+    ? searchParams.get('q').split(' ')[0]
+    : ''
+  const [searchInput, setSeachInput] = useState(qValue)
 
   const handleChange = (event) => {
     setSeachInput(event.target.value)

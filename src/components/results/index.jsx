@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import LanguageRow from './LanguageRow'
+import styled from 'styled-components'
 import { breakpoints } from '../../styles/_breakpoints'
 
 const Container = styled.div`
-  /* border: 1px solid red; */
   align-items: center;
   display: flex;
   flex-direction: column;
+  padding: 20px;
+  @media (max-width: ${breakpoints.medium}) {
+    padding-top: 0;
+  }
 `
 const Header = styled.header`
   border-bottom: 1px solid var(--border-muted);
@@ -17,25 +19,83 @@ const Header = styled.header`
   font-weight: bold;
   justify-content: space-between;
   padding: 20px;
+  @media (max-width: ${breakpoints.medium}) {
+    padding-left: 0;
+  }
 `
 const Body = styled.main`
-  /* border: 1px solid white; */
   display: flex;
   flex-direction: row;
   max-width: var(--content-max);
   width: 100%;
-  @media (max-width: ${breakpoints.small}) {
-    flex-direction: column;
+  @media (max-width: ${breakpoints.medium}) {
     align-items: center;
+    flex-direction: column;
+  }
+`
+const Column = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  @media (min-width: ${breakpoints.medium}) {
+    display: none;
+  }
+`
+const SortFilterContainer = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  width: 100%;
+  @media (min-width: ${breakpoints.medium}) {
+    display: none;
+  }
+`
+const Selector = styled.select`
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  display: inline-block;
+  height: 32px;
+  max-width: 100%;
+  padding: 5px 12px;
+  width: 75%;
+
+  &:hover {
+    background: var(--border);
+    border-color: var(--text-muted);
+    cursor: pointer;
+  }
+`
+
+const SortSelector = styled.select`
+  background-color: var(--bg);
+  background-position: right 8px center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 16px;
+  height: 32px;
+  padding: 5px 12px;
+
+  &:hover {
+    background: var(--border);
+    border-color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  @media (max-width: ${breakpoints.medium}) {
+    display: none;
   }
 `
 const LanguagePanel = styled.section`
   display: flex;
   flex-direction: column;
   width: 25%;
-  @media (max-width: ${breakpoints.small}) {
-    width: 100%;
-    font-size: 18px;
+  @media (max-width: ${breakpoints.medium}) {
+    display: none;
   }
 `
 const LanguageBody = styled.div`
@@ -50,13 +110,25 @@ const LanguageHeader = styled.header`
   font-weight: bold;
   margin-bottom: 8px;
 `
+const LanguageRow = styled.div`
+  border-radius: 6px;
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  padding: 6px 12px;
+  &:hover {
+    background: var(--header-bg);
+    cursor: pointer;
+  }
+`
 const ResultsPanel = styled.section`
   display: flex;
   flex-direction: column;
   padding-left: 20px;
   width: 75%;
-  @media (max-width: ${breakpoints.small}) {
+  @media (max-width: ${breakpoints.medium}) {
     width: 100%;
+    padding: 0;
   }
 `
 const ResultRow = styled.div`
@@ -68,26 +140,13 @@ const ResultRow = styled.div`
     cursor: pointer;
   }
 `
-const SortButton = styled.button`
-  background: var(--border-muted);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-size: 12px;
-  line-height: 20px;
-  padding: 3px 12px;
-  &:hover {
-    background: var(--border);
-    border-color: var(--text-muted);
-    cursor: pointer;
-  }
-`
 
 function Results() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchResults, setSearchResults] = useState(null)
   const [languages, setLanguages] = useState(null)
+
   useEffect(() => {
     const countLanguages = (items) => {
       const result = {}
@@ -115,10 +174,7 @@ function Results() {
     for (let [key, value] of searchParams.entries()) {
       newQuery[key] = value
     }
-    if (newQuery.sort !== '') newQuery.sort = ''
-    else newQuery.sort = 'stars'
-
-    console.log(newQuery)
+    newQuery.sort = e.target.value
     setSearchParams(newQuery)
   }
 
@@ -126,32 +182,75 @@ function Results() {
     navigate(`../details?full_name=${full_name}`, { replace: true })
   }
 
+  const handleLanguageFilter = async (event) => {
+    let newQuery = {}
+    for (let [key, value] of searchParams.entries()) {
+      newQuery[key] = value
+    }
+    let query = searchParams.get('q').split(' ')
+    newQuery.q = `${query[0]} language:${event.target.value}`
+    setSearchParams(newQuery)
+  }
+
   if (searchResults) {
     const languageKeys = Object.keys(languages)
     return (
       <Container>
         <Body>
+          <Column>
+            <SortFilterContainer>
+              <label htmlFor="language">Language</label>
+              <Selector
+                value={searchParams.get('q').split(' ')[0]}
+                onChange={handleLanguageFilter}
+              >
+                {languageKeys &&
+                  languageKeys.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {lang}
+                    </option>
+                  ))}
+              </Selector>
+            </SortFilterContainer>
+
+            <SortFilterContainer>
+              <label htmlFor="sort">Sort</label>
+              <Selector value={searchParams.get('sort')} onChange={handleSort}>
+                <option value={''}>Best match</option>
+                <option value={'stars'}>Most stars</option>
+              </Selector>
+            </SortFilterContainer>
+          </Column>
+
           <LanguagePanel>
             <LanguageBody>
               <LanguageHeader>Languages</LanguageHeader>
               {languageKeys &&
                 languageKeys.map((lang) => (
-                  <LanguageRow key={lang} count={languages[lang]} lang={lang} />
+                  <LanguageRow
+                    key={lang}
+                    onClick={() => handleLanguageFilter(lang)}
+                  >
+                    <div>{lang}</div>
+                    <div>{languages[lang]}</div>
+                  </LanguageRow>
                 ))}
             </LanguageBody>
           </LanguagePanel>
+
           <ResultsPanel>
             <Header>
               <div>
                 showing {searchResults.items.length} of{' '}
                 {searchResults.total_count} repository results
               </div>
-              <SortButton onClick={handleSort}>
-                Sort:{' '}
-                {searchParams.get('sort') === 'stars'
-                  ? 'Most stars'
-                  : 'Best match'}
-              </SortButton>
+              <SortSelector
+                value={searchParams.get('sort')}
+                onChange={handleSort}
+              >
+                <option value={''}>Best match</option>
+                <option value={'stars'}>Most stars</option>
+              </SortSelector>
             </Header>
             {searchResults.items &&
               searchResults.items.map((item) => (
