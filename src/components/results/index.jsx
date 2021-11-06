@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { breakpoints } from '../../styles/_breakpoints'
+import GithubRepoIcon from '../GithubRepoIcon'
 
 const Container = styled.div`
   align-items: center;
@@ -12,15 +13,16 @@ const Container = styled.div`
     padding-top: 0;
   }
 `
-const Header = styled.header`
+const ResultsHeader = styled.header`
+  align-items: center;
   border-bottom: 1px solid var(--border-muted);
   display: flex;
   font-size: 20px;
   font-weight: bold;
   justify-content: space-between;
-  padding: 20px;
+  padding-bottom: 20px;
   @media (max-width: ${breakpoints.medium}) {
-    padding-left: 0;
+    padding-top: 10px;
   }
 `
 const Body = styled.main`
@@ -135,9 +137,13 @@ const ResultRow = styled.div`
   border-bottom: 1px solid var(--border-muted);
   display: flex;
   flex-direction: row;
-  padding: 20px;
+  padding: 20px 0 20px;
   &:hover {
     cursor: pointer;
+  }
+
+  svg {
+    margin-right: 20px;
   }
 `
 
@@ -239,9 +245,9 @@ function Results() {
           </LanguagePanel>
 
           <ResultsPanel>
-            <Header>
+            <ResultsHeader>
               <div>
-                showing {searchResults.items.length} of{' '}
+                Showing {searchResults.items.length} of{' '}
                 {searchResults.total_count} repository results
               </div>
               <SortSelector
@@ -251,13 +257,14 @@ function Results() {
                 <option value={''}>Best match</option>
                 <option value={'stars'}>Most stars</option>
               </SortSelector>
-            </Header>
+            </ResultsHeader>
             {searchResults.items &&
               searchResults.items.map((item) => (
                 <ResultRow
                   key={item.id}
                   onClick={() => handleDetails(item.full_name)}
                 >
+                  <GithubRepoIcon />
                   {item.name}
                 </ResultRow>
               ))}

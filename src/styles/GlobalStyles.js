@@ -12,6 +12,10 @@ const GlobalStyles = createGlobalStyle`
 		--white: #f0f6fc;
 
 		--content-max: 1012px;
+		--color-accent-subtle: rgba(56,139,253,0.15);
+		--color-topic-tag-border: rgba(0,0,0,0);
+		--color-accent-emphasis: #1f6feb;
+		--color-fg-on-emphasis: #f0f6fc;
 	}
 
 	body {
